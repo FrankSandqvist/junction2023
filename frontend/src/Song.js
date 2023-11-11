@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "./Button";
 import UserInput from "./utils/UserInput";
@@ -6,10 +6,13 @@ import UserInput from "./utils/UserInput";
 export default function Song() {
   const params = useParams();
 
+  const cssAnimationDurationRef = useRef();
   const [loading, setLoading] = useState(true);
   const [speed, setSpeed] = useState(0);
+  const [cssAnimationDurationLastUpdated, setCssAnimationDurationLastUpdated] =
+    useState(0);
+  const [cssAnimationDuration, setCssAnimationDuration] = useState(null);
   const [data, setData] = useState(null);
-  
 
   const [loaded, setLoaded] = useState(0);
 
@@ -20,9 +23,35 @@ export default function Song() {
         setData(json.find((d) => d.song_name === params.songId));
         setLoading(false);
       });
+
+    console.log(speed);
+    setCssAnimationDurationLastUpdated(+(new Date()));
   }, []);
 
   const videoRef = useRef();
+
+  useEffect(() => {
+    const duration = Math.min(2, Math.max(0.3, 2 - (speed / 10)));
+    setCssAnimationDuration(duration);
+    
+    console.log(speed);
+
+    clearTimeout(cssAnimationDurationRef.current);
+    if (speed === 0) {
+      setCssAnimationDuration(null);
+      cssAnimationDurationRef.current = setTimeout(() => {
+        setCssAnimationDurationLastUpdated(+new Date());
+      }, 1000);
+      return;
+    }
+
+    console.log("Duration",duration);
+
+    // console.log("setting", duration)
+    cssAnimationDurationRef.current = setTimeout(() => {
+      setCssAnimationDurationLastUpdated(+new Date());
+    }, (duration * 1000) + (duration * 1000 % 500));
+  }, [cssAnimationDurationLastUpdated]);
 
   useEffect(() => {
     if (loading) return;
@@ -32,7 +61,7 @@ export default function Song() {
   useEffect(() => {
     if (loading) return;
 
-    videoRef.current.playbackRate = speed;
+    videoRef.current.playbackRate = Math.max(0.1, speed / 6);
   }, [loading, speed]);
 
   useEffect(() => {
@@ -45,13 +74,11 @@ export default function Song() {
 
   if (loading) return <div>Loading</div>;
 
-  console.log(loaded);
-
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
-    setSpeed(Math.max(0.1, value / 10))
+    setSpeed(value);
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
-  }
+  };
 
   return (
     <div className="flex flex-row items-stretch h-full w-full">
@@ -62,20 +89,22 @@ export default function Song() {
           autoPlay
           playsInline
           loop
-          className="animate-run w-full"
-          style={{ animationDuration: `${1 - speed / 10}s` }}
+          className="w-full animate-run"
+          style={{ animationDuration: `${cssAnimationDuration ?? 1000}s` }}
         />
-        <div className="bg-black/50 absolute top-0 left-0 right-0 bottom-0 z-50 flex flex-col items-center justify-center text-center p-16 backdrop-blur-lg">
-          <p className="text-3xl mb-4">
-            Since you are testing this on your computer...
-          </p>
-          <p className="mb-8">
-            ...you can simulate running by tapping the space bar!
-          </p>
-          <div className="border-2 border-b-4 border-white uppercase text-white px-24 py-2 rounded-lg">
-            SPACE
+        {speed === 0 ? (
+          <div className="bg-black/50 absolute top-0 left-0 right-0 bottom-0 z-50 flex flex-col items-center justify-center text-center p-16 backdrop-blur-lg">
+            <p className="text-3xl mb-4">
+              Since you are testing this on your computer...
+            </p>
+            <p className="mb-8">
+              ...you can simulate running by tapping the space bar!
+            </p>
+            <div className="border-2 border-b-4 border-white uppercase text-white px-24 py-2 rounded-lg">
+              SPACE
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
       <div className="w-full lg:w-1/2 flex flex-col items-center relative">
         <div
@@ -106,11 +135,13 @@ export default function Song() {
           className="mb-20"
         />
 
+        <p>{speed*10} BPM</p>
+
         <p
           className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock"
           style={{
             fontStretch: "50%",
-            animationDuration: `${1 - speed / 10}s`,
+            animationDuration: speed ? `${(50 - speed)*0.01666}s` : "0s",
           }}
         >
           RUNNING
