@@ -18,7 +18,7 @@ export default function PickSong() {
   }, []);
 
   return (
-    <div className="max-w-[38rem] ml-auto mr-auto flex flex-col items-stretch">
+    <div className="max-w-[38rem] ml-auto mr-auto flex flex-col items-stretch px-4">
       <p
         className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock text-center"
         style={{ fontStretch: "50%" }}
@@ -33,6 +33,7 @@ export default function PickSong() {
               <SongLink
                 songId={d.song_name}
                 title={d.song_name}
+                artist={d.artist}
                 image={d.song_cover_link}
               />
             ))}
@@ -42,6 +43,7 @@ export default function PickSong() {
               <SongLink
                 songId={d.song_name}
                 title={d.song_name}
+                artist={d.artist}
                 image={d.song_cover_link}
               />
             ))}
@@ -51,13 +53,17 @@ export default function PickSong() {
               <SongLink
                 songId={d.song_name}
                 title={d.song_name}
+                artist={d.artist}
                 image={d.song_cover_link}
               />
             ))}
           </Genre>
         </>
       ) : (
-        "Loading"
+        <div className="flex flex-col gap-4 items-center">
+          <div className="text-lg font-bold">Loading some tunes...</div>
+          <div>Internet has been struggling a bit this Junction... 😀</div>
+        </div>
       )}
     </div>
   );
@@ -66,9 +72,11 @@ export default function PickSong() {
 function Genre(props) {
   return (
     <div className="mb-8 flex flex-col items-stretch">
-      <p className="font-tourney text-2xl mb-2 font-black uppercase text-center">
+      <div className="font-tourney text-xl lg:text-2xl mb-2 font-black uppercase flex lg:justify-center gap-4 items-center">
+        <div className=" h-1 bg-slate-50/50 w-16 hidden lg:block"></div>
         {props.title}
-      </p>
+        <div className=" h-1 bg-slate-50/50 flex-grow"></div>
+      </div>
       {props.children}
     </div>
   );
@@ -79,10 +87,13 @@ function SongLink(props) {
     <Link to={`/song/${props.songId}`}>
       <div className="p-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.80)] uppercase hover:scale-105 duration-300 transition-all hover:bg-slate-50 flex flex-row items-center hover:text-orange-600 hover:skew-y-2">
         <div
-          className="w-12 h-12 bg-cover scale-125 -translate-x-6 mr-2"
+          className="w-12 h-12 bg-cover scale-125 lg:-translate-x-6 mr-4"
           style={{ backgroundImage: `url(${props.image})` }}
         ></div>
-        <p className="flex-grow">{props.title}</p>
+        <div className="flex-grow flex flex-col items-start">
+          <p className="text-sm">{props.artist}</p>
+          <p className="text-md lg:text-lg">{props.title}</p>
+        </div>
         <span className="ml-8 text-2xl">▶</span>
       </div>
     </Link>
