@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "./Button";
+import UserInput from "./utils/UserInput";
 
 export default function Song() {
   const params = useParams();
@@ -8,11 +9,12 @@ export default function Song() {
   const [loading, setLoading] = useState(true);
   const [speed, setSpeed] = useState(0);
   const [data, setData] = useState(null);
+  
 
   const [loaded, setLoaded] = useState(0);
 
   useEffect(() => {
-    fetch("https://56526f9c0c2158.lhr.life/get_songs")
+    fetch("https://011a660d1d3d8f.lhr.life/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData(json.find((d) => d.song_name === params.songId));
@@ -44,6 +46,11 @@ export default function Song() {
   if (loading) return <div>Loading</div>;
 
   console.log(loaded);
+
+  const handleUserInputUpdate = ({ value }) => {
+    console.log(value)
+    videoRef.current.playbackRate = Math.max(0.05, value / 10);
+  }
 
   return (
     <div className="flex flex-row items-stretch h-full w-full">
@@ -127,6 +134,7 @@ export default function Song() {
           </Link>
         </div>
       </div>
+      <UserInput onUpdate={handleUserInputUpdate} />
     </div>
   );
 }
