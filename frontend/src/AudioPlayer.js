@@ -49,11 +49,12 @@ const AudioPlayer = (props) => {
       return;
     }
     const { volume, reverb, wet, playbackRate } = props.params;
-
+    
+    console.log(volume);
     // console.log("AudioPlayer: volumes", mapNumber(playbackRate, 0, 1, 0.9, 1.2), 100 - mapNumber(playbackRate, 0, 1, 0.1, 50), props.params);
     players.forEach(
       (player, idx) =>
-        (player.volume.value = mapNumber(volume[idx] * 100, 0, 1, -60, 6))
+        (player.volume.value = mapNumber(volume[idx], 0, 1, -60, 6))
     );
 
     if (audioPlaying) {
