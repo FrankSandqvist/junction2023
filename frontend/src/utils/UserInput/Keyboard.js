@@ -23,7 +23,7 @@ const KeyboardCapture = ({ onUpdate }) => {
       const filteredKeypressesTimestamps = keypressesTimestamps.filter(v => v >= Date.now() - 1 * 5000);
       keypressesTimestamps = [...filteredKeypressesTimestamps];
       onUpdate({ value: filteredKeypressesTimestamps.length })
-    }, 1000)
+    }, 250)
 
     // Cleanup the event listeners when the component unmounts
     return () => {
