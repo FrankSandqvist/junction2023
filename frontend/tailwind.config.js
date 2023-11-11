@@ -7,7 +7,7 @@ module.exports = {
         unbounded: "Unbounded",
       },
       animation: {
-        run: "run 0.4s ease infinite",
+        run: "run 0.5s ease infinite",
         rock: "rock 0.5s ease infinite",
         wave: "wave 2s ease infinite",
       },
