@@ -12,7 +12,7 @@ const ReverbComponent = () => {
 
   useEffect(() => {
     // Load the player with a URL to your audio file
-    player.load("/sounds/abba.mp3");
+    // player.load("/sounds/abba.mp3");
     // Connect the player to the reverb
     player.connect(reverb);
     // Connect the reverb to the destination
