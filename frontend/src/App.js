@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Home from "./Home";
 import PickSong from "./PickSong";
 import Song from "./Song";
+import TunePlayground from './TunePlayground'
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
     path: "/song/:songId",
     element: <Song />,
   },
+  {
+    path: "playground",
+    element: <TunePlayground />
+  }
 ]);
 
 export default function App() {
