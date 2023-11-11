@@ -120,9 +120,9 @@ export default function Song() {
     setTrackParams({
       volume: [
         vocalsTrackVolume,
+        drumsTrackVolume,
         bassTrackVolume,
         othersTrackVolume,
-        drumsTrackVolume,
       ],
       reverb: drumsTrackVolume,
       wet: bassTrackVolume,
