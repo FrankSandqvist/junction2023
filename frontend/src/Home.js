@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "./Button";
+import * as Tone from "tone";
 
 export default function Home() {
   return (
@@ -31,9 +32,16 @@ export default function Home() {
         <p className="mb-4">...or you can test it on your computer:</p>
       </div>
       <div className="mb-32">
-        <Link to="/pick-song">
-          <Button>START SOME SWEATY TUNES</Button>
-        </Link>
+      <Link to="/pick-song">
+        <Button onClick={() => {
+          try {
+            DeviceMotionEvent.requestPermission();
+            Tone.start();
+          } catch (e) {
+            console.error('Exception in PickSong.js', e)
+          }
+        }}>START SOME SWEATY TUNES</Button>
+      </Link>
       </div>
       <div className="w-full h-64 relative">
         <img

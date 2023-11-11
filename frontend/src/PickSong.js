@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Button from "./Button";
 import { useEffect, useState } from "react";
+import * as Tone from "tone";
 
 export default function PickSong() {
   const [data, setData] = useState(null);
@@ -101,7 +102,14 @@ function Genre(props) {
 
 function SongLink(props) {
   return (
-    <Link to={`/song/${props.songId}`}>
+    <Link to={`/song/${props.songId}`} onClick={() => {
+      try {
+        DeviceMotionEvent.requestPermission();
+        Tone.start();
+      } catch (e) {
+        console.error('Exception in PickSong.js', e)
+      }
+    }}>
       <div className="p-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.80)] uppercase hover:scale-105 duration-300 transition-all hover:bg-slate-50 flex flex-row items-center hover:text-orange-600 hover:skew-y-2">
         <div
           className="w-12 h-12 bg-cover scale-125 lg:-translate-x-6 mr-4"

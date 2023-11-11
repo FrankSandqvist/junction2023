@@ -78,7 +78,7 @@ const ReverbComponent = () => {
       // player.dispose();
       // reverb.dispose();
     };
-  }, [player, reverb]);
+  }, [player]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

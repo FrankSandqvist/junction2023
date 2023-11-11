@@ -9,6 +9,7 @@ const FootstepsCounter = (props) => {
     let stepsCounterInterval = null;
 
     const handleDeviceMotion = (event) => {
+      // console.log('devicemotion', event)
       const { acceleration } = event;
       if (acceleration && Math.abs(acceleration.x) > 10) {
         keypressesTimestamps.push(Date.now());
@@ -30,7 +31,7 @@ const FootstepsCounter = (props) => {
       );
       keypressesTimestamps = [...filteredKeypressesTimestamps];
       props.onUpdate({ value: filteredKeypressesTimestamps.length });
-    }, 1000);
+    }, 300);
 
     return () => {
       window.removeEventListener("devicemotion", handleDeviceMotion);
@@ -39,14 +40,15 @@ const FootstepsCounter = (props) => {
   }, []);
 
   return (
-    <Button
-      onClick={() => {
-        DeviceMotionEvent.requestPermission();
-        props.onClick();
-      }}
-    >
-      Start
-    </Button>
+    <></>
+    // <Button
+    //   onClick={() => {
+    //     DeviceMotionEvent.requestPermission();
+    //     props.onClick();
+    //   }}
+    // >
+    //   Start
+    // </Button>
   );
 };
 

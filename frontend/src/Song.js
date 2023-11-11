@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "./Button";
 import UserInput from "./utils/UserInput";
+import AudioPlayer from "./AudioPlayer";
 
 export function clampNumber(input, min, max) {
   return input < min ? min : input > max ? max : input;
@@ -25,24 +26,33 @@ export default function Song() {
   const [data, setData] = useState(null);
   const [beat, setBeat] = useState(false);
 
-  const [loaded, setLoaded] = useState(0);
+  const [tracks, setTracks] = useState([]);
 
-  const audio1Ref = useRef();
-  const audio2Ref = useRef();
-  const audio3Ref = useRef();
-  const audio4Ref = useRef();
+  const [tracksParams, setTrackParams] = useState({});
 
   const bpm = speed * 6;
 
   useEffect(() => {
+    console.log("Song.js: Inititalized");
     fetch("https://24aa496694f7e6.lhr.life/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData(json.find((d) => d.song_name === params.songId));
+
+        const finalTracks = json.find(
+          (d) => d.song_name === params.songId
+        )?.mp3_links;
+        setTracks(
+          finalTracks.map((v) => `https://24aa496694f7e6.lhr.life${v}`)
+        );
         setLoading(false);
       });
 
     setCssAnimationDurationLastUpdated(+new Date());
+
+    return () => {
+      console.log("Song.js: Unmounting");
+    };
   }, []);
 
   const videoRef = useRef();
@@ -107,10 +117,14 @@ export default function Song() {
       1
     );
 
-    audio1Ref.current.volume = vocalsTrackVolume;
-    audio2Ref.current.volume = bassTrackVolume;
-    audio3Ref.current.volume = othersTrackVolume;
-    audio4Ref.current.volume = drumsTrackVolume;
+    setTrackParams({
+      volume: [
+        vocalsTrackVolume,
+        bassTrackVolume,
+        othersTrackVolume,
+        drumsTrackVolume,
+      ],
+    });
 
     console.log(
       vocalsTrackVolume,
@@ -120,16 +134,6 @@ export default function Song() {
     );
   }, [loading, speed]);
 
-  useEffect(() => {
-    if (loaded < 4) return;
-
-    setTimeout(() => {
-      audio1Ref.current.play();
-      audio2Ref.current.play();
-      audio3Ref.current.play();
-      audio4Ref.current.play();
-    }, 2000);
-  }, [loaded]);
 
   if (loading) return <div>Loading</div>;
 
@@ -143,12 +147,7 @@ export default function Song() {
     setBeat((b) => !b);
   };
 
-  const handleStartUserInput = () => {
-    audio1Ref.current.play();
-    audio2Ref.current.play();
-    audio3Ref.current.play();
-    audio4Ref.current.play();
-  };
+  const handleStartUserInput = () => {};
 
   const bpmDelta = bpm - data.song_bpm;
 
@@ -200,14 +199,14 @@ export default function Song() {
           <div className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-black"></div>
         </div>
 
-        <input
+        {/* <input
           type="range"
           min="0.1"
           max="10"
           onChange={(e) => setSpeed(e.target.value)}
           step={0.05}
           className="mb-20"
-        />
+        /> */}
 
         <div className="border border-slate-50 flex flex-col p-4">
           <div className="flex flex-row">
@@ -261,57 +260,13 @@ export default function Song() {
             : "PERFECT!!!!"}
         </p>
 
-        <audio
-          key={data.mp3_links[0].song_name}
-          controls
-          onLoadedData={() => setLoaded((l) => l + 1)}
-          ref={audio1Ref}
-        >
-          <source
-            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[0]}`}
-            type="audio/ogg"
-          ></source>
-        </audio>
-        <audio
-          key={data.mp3_links[1].song_name}
-          controls
-          onLoadedData={() => setLoaded((l) => l + 1)}
-          ref={audio2Ref}
-        >
-          <source
-            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[1]}`}
-            type="audio/ogg"
-          ></source>
-        </audio>
-        <audio
-          key={data.mp3_links[2].song_name}
-          controls
-          onLoadedData={() => setLoaded((l) => l + 1)}
-          ref={audio3Ref}
-        >
-          <source
-            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[2]}`}
-            type="audio/ogg"
-          ></source>
-        </audio>
-        <audio
-          key={data.mp3_links[3].song_name}
-          controls
-          onLoadedData={() => setLoaded((l) => l + 1)}
-          ref={audio4Ref}
-        >
-          <source
-            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[3]}`}
-            type="audio/ogg"
-          ></source>
-        </audio>
-
         <div className="absolute left-4 bottom-4">
           <Link to="/pick-song">
             <Button>Run to another song</Button>
           </Link>
         </div>
       </div>
+      {tracks?.length && <AudioPlayer tracks={tracks} params={tracksParams} />}
       <UserInput
         onBeat={handleBeat}
         onUpdate={handleUserInputUpdate}
