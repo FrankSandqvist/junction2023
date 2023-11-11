@@ -18,8 +18,6 @@ os.path.basename(folder_location) + '.mp3'))
             self.json_data['bpm'] = tempo
             with open(folder_location + '/data.json', 'w') as fp:
                 json.dump(self.json_data, fp)
-        if not 'img' in self.json_data:
-            self.json_data['img'] = ''
         self.json_data['mp3_links'] = ['/music/'+ folder_location + 
 '/vocals.mp3',  '/music/'+ folder_location + '/drums.mp3', '/music/'+ 
 folder_location + '/bass.mp3','/music/'+ folder_location + '/other.mp3']
