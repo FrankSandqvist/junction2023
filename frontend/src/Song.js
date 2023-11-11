@@ -54,7 +54,6 @@ export default function Song() {
 
   return (
     <div className="flex flex-row items-stretch h-full w-full">
-
       <div className="hidden w-1/2 lg:block relative overflow-hidden">
         <video
           src="/run.mp4"
@@ -65,7 +64,7 @@ export default function Song() {
           className="animate-run w-full"
           style={{ animationDuration: `${1 - speed / 10}s` }}
         />
-        <div className="bg-black/50 absolute top-0 left-0 right-0 bottom-0 z-50 flex flex-col items-center justify-center text-center p-16">
+        <div className="bg-black/50 absolute top-0 left-0 right-0 bottom-0 z-50 flex flex-col items-center justify-center text-center p-16 backdrop-blur-lg">
           <p className="text-3xl mb-4">
             Since you are testing this on your computer...
           </p>
@@ -91,7 +90,7 @@ export default function Song() {
           <div
             className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center grayscale  contrast-200 brightness-200"
             style={{
-              backgroundImage: `url(${"https://www.juxtapoz.com/images/Evan%20Pricco/2019/7July2019/White_Stripes_Elephant.jpg"})`,
+              backgroundImage: `url(${data.song_cover_link})`,
             }}
           ></div>
           <div className="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-black"></div>
@@ -116,17 +115,17 @@ export default function Song() {
           RUNNING
         </p>
         {data.mp3_links.map((mp3) => (
-        <audio
-          key={mp3.song_name}
-          controls
-          onLoadedData={() => setLoaded((l) => l + 1)}
-        >
-          <source
-            src={`https://56526f9c0c2158.lhr.life${mp3}`}
-            type="audio/ogg"
-          ></source>
-        </audio>
-      ))}
+          <audio
+            key={mp3.song_name}
+            controls
+            onLoadedData={() => setLoaded((l) => l + 1)}
+          >
+            <source
+              src={`https://011a660d1d3d8f.lhr.life${mp3}`}
+              type="audio/ogg"
+            ></source>
+          </audio>
+        ))}
 
         <div className="absolute left-4 bottom-4">
           <Link to="/pick-song">

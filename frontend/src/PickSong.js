@@ -19,16 +19,19 @@ export default function PickSong() {
 
   return (
     <div className="max-w-[38rem] ml-auto mr-auto flex flex-col items-stretch px-4">
-      <p
-        className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock text-center"
-        style={{ fontStretch: "50%" }}
-      >
-        PICK A SONG
+      <p className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock text-center uppercase">
+        Your Library
       </p>
+      <p className="mb-16 text-center">Which pace are you going for today?</p>
 
       {data ? (
         <>
-          <Genre title="Slow-paced">
+          <Genre
+            title="Slow-paced"
+            shuffleLink={`/song/${
+              data[0][Math.floor(Math.random() * data[0].length)].song_name
+            }`}
+          >
             {data[0].map((d) => (
               <SongLink
                 songId={d.song_name}
@@ -38,7 +41,12 @@ export default function PickSong() {
               />
             ))}
           </Genre>
-          <Genre title="Medium-paced">
+          <Genre
+            title="Medium-paced"
+            shuffleLink={`/song/${
+              data[1][Math.floor(Math.random() * data[1].length)].song_name
+            }`}
+          >
             {data[1].map((d) => (
               <SongLink
                 songId={d.song_name}
@@ -48,7 +56,12 @@ export default function PickSong() {
               />
             ))}
           </Genre>
-          <Genre title="High-paced">
+          <Genre
+            title="High-paced"
+            shuffleLink={`/song/${
+              data[2][Math.floor(Math.random() * data[2].length)].song_name
+            }`}
+          >
             {data[2].map((d) => (
               <SongLink
                 songId={d.song_name}
@@ -62,7 +75,7 @@ export default function PickSong() {
       ) : (
         <div className="flex flex-col gap-4 items-center">
           <div className="text-lg font-bold">Loading some tunes...</div>
-          <div>Internet has been struggling a bit this Junction... 😀</div>
+          <div>Internet has been struggling a bit this Junction... <span className="text-lg">😀</span></div>
         </div>
       )}
     </div>
@@ -72,10 +85,14 @@ export default function PickSong() {
 function Genre(props) {
   return (
     <div className="mb-8 flex flex-col items-stretch">
-      <div className="font-tourney text-xl lg:text-2xl mb-2 font-black uppercase flex lg:justify-center gap-4 items-center">
-        <div className=" h-1 bg-slate-50/50 w-16 hidden lg:block"></div>
+      <div className="font-tourney text-xl lg:text-2xl mb-2 font-black uppercase flex lg:justify-center items-center">
         {props.title}
-        <div className=" h-1 bg-slate-50/50 flex-grow"></div>
+        <div className=" h-1 bg-slate-50/50 flex-grow ml-4"></div>
+        <Link to={props.shuffleLink}>
+          <div className="border-slate-50/50 border-4 text-slate-50 p-2 text-lg duration-300 transition-colors hover:text-orange-500 hover:border-slate-50 hover:bg-slate-50">
+            Shuffle ▶
+          </div>
+        </Link>
       </div>
       {props.children}
     </div>
