@@ -63,13 +63,13 @@ export default function Song() {
 
     videoRef.current.playbackRate = Math.max(0.1, speed / 6);
 
-    const bpm = speed * 10;
+    const bpm = speed * 12;
     const bpmDelta = data.song_bpm - bpm;
 
     //  const reverbAmount = ;
 
-    const vocalsTrackVolume = Math.min(1, 0.3 + Math.max(0, 1 - bpmDelta / 50));;
-    const bassTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 50));
+    const bassTrackVolume = Math.min(1, 0.3 + Math.max(0, 1 - bpmDelta / 50));;
+    const vocalsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 50));
     const othersTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 30));
     const drumsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 10));
 
@@ -160,7 +160,8 @@ export default function Song() {
           className="mb-20"
         />
 
-        <p>{speed * 10} BPM</p>
+<p>Song is:{data.song_bpm} BPM</p>
+<p>You run:{speed * 12} BPM</p>
 
         <p
           className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock"
