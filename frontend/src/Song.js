@@ -25,6 +25,7 @@ export default function Song() {
   const [cssAnimationDuration, setCssAnimationDuration] = useState(null);
   const [data, setData] = useState(null);
   const [beat, setBeat] = useState(false);
+  const [songsLoading, setSongsLoading] = useState(true);
 
   const [tracks, setTracks] = useState([]);
 
@@ -104,14 +105,14 @@ export default function Song() {
     );
     const othersTrackVolume = mapNumber(
       bpm,
-      data.song_bpm * 0.6,
+      data.song_bpm * 0.5,
       data.song_bpm * 0.8,
       0,
       1
     );
     const drumsTrackVolume = mapNumber(
       bpm,
-      data.song_bpm * 0.8,
+      data.song_bpm * 0.7,
       data.song_bpm,
       0.1,
       1
@@ -120,7 +121,7 @@ export default function Song() {
     setTrackParams({
       volume: [
         vocalsTrackVolume,
-        drumsTrackVolume,
+        drumsTrackVolume, 
         bassTrackVolume,
         othersTrackVolume,
       ],
@@ -137,7 +138,7 @@ export default function Song() {
     );
   }, [loading, speed]);
 
-  if (loading) return <div>Loading</div>;
+  if (loading) return <div>Loading your tunes</div>;
 
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
@@ -149,7 +150,9 @@ export default function Song() {
     setBeat((b) => !b);
   };
 
-  const handleStartUserInput = () => {};
+  const handleSongStart = () => {
+    setSongsLoading(false);
+  };
 
   const bpmDelta = bpm - data.song_bpm;
 
@@ -181,7 +184,7 @@ export default function Song() {
       </div>
       <div className="w-full lg:w-1/2 flex flex-col items-center relative">
         <div
-          className="rounded-b-lg p-4 flex flex-col gap-4 relative w-full pt-24 mix-blend-screen"
+          className="rounded-b-lg p-4 flex flex-col gap-4 relative w-full pt-24 mb-16 mix-blend-screen"
           style={{
             backgroundImage: `url(${data.song_cover_link})`,
           }}
@@ -210,7 +213,7 @@ export default function Song() {
           className="mb-20"
         /> */}
 
-        <div className="border border-slate-50 flex flex-col p-4">
+        <div className="border border-slate-50 flex flex-col p-4 mb-8">
           <div className="flex flex-row">
             <div className="w-56">Song is</div>
             <div>{data.song_bpm} BPM</div>
@@ -224,11 +227,11 @@ export default function Song() {
         <div className="h-32 relative">
           <div className="relative w-48 h-48"></div>
           <div
-            className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full animate-rock"
+            className="absolute left-6 top-6 w-36 h-36 border-2 border-white/70 rounded-full animate-rock"
             style={{ animationDuration: `${60 / data.song_bpm}s` }}
           />
           <div
-            className={`absolute left-8 top-8 w-36 h-36 border-2 border-white rounded-full duration-500 transition-all ${
+            className={`absolute left-6 top-6 w-36 h-36 border-2 border-white rounded-full duration-500 transition-all ${
               bpmDelta > -15 && bpmDelta < 15
                 ? "border-white drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] border-8"
                 : ""
@@ -241,7 +244,7 @@ export default function Song() {
           />
         </div>
         <p
-          className={`font-tektur font-black  shadow-slate-200 text-5xl duration-300 transition-transform -mt-12 mb-32 ${
+          className={`font-tektur font-black  shadow-slate-200 text-3xl lg:text-5xl duration-300 transition-transform lg:-mt-14 -mt-12 mb-32 ${
             beat % 2 ? "scale-110" : "scale-100"
           }`}
           style={{
@@ -256,7 +259,9 @@ export default function Song() {
             })`,
           }}
         >
-          {bpmDelta < -40
+          {songsLoading
+            ? "Loading song..."
+            : bpmDelta < -40
             ? "FASTER!"
             : bpmDelta < -20
             ? "OK!"
@@ -271,12 +276,14 @@ export default function Song() {
           </Link>
         </div>
       </div>
-      {tracks?.length && <AudioPlayer tracks={tracks} params={tracksParams} />}
-      <UserInput
-        onBeat={handleBeat}
-        onUpdate={handleUserInputUpdate}
-        onClick={handleStartUserInput}
-      />
+      {tracks?.length && (
+        <AudioPlayer
+          tracks={tracks}
+          params={tracksParams}
+          onStart={handleSongStart}
+        />
+      )}
+      <UserInput onBeat={handleBeat} onUpdate={handleUserInputUpdate} />
     </div>
   );
 }

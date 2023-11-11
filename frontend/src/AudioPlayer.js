@@ -74,6 +74,7 @@ const AudioPlayer = (props) => {
     await Tone.start();
     // Wait for all players to be loaded
     await Tone.loaded();
+    props.onStart();
     players.forEach((player) => player.start());
     console.log("AudioPlayer: started", players);
     setTimeout(() => {

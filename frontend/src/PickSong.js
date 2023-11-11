@@ -28,12 +28,12 @@ export default function PickSong() {
       {data ? (
         <>
           <Genre
-            title="Slow-paced"
+            title="Fast-paced"
             shuffleLink={`/song/${
-              data[0][Math.floor(Math.random() * data[0].length)].song_name
+              data[2][Math.floor(Math.random() * data[2].length)].song_name
             }`}
           >
-            {data[0].map((d) => (
+            {data[2].map((d) => (
               <SongLink
                 songId={d.song_name}
                 title={d.song_name}
@@ -58,12 +58,12 @@ export default function PickSong() {
             ))}
           </Genre>
           <Genre
-            title="High-paced"
+            title="Slow-paced"
             shuffleLink={`/song/${
-              data[2][Math.floor(Math.random() * data[2].length)].song_name
+              data[0][Math.floor(Math.random() * data[0].length)].song_name
             }`}
           >
-            {data[2].map((d) => (
+            {data[0].map((d) => (
               <SongLink
                 songId={d.song_name}
                 title={d.song_name}
@@ -76,7 +76,10 @@ export default function PickSong() {
       ) : (
         <div className="flex flex-col gap-4 items-center">
           <div className="text-lg font-bold">Loading some tunes...</div>
-          <div>Internet has been struggling a bit this Junction... <span className="text-lg">😀</span></div>
+          <div>
+            Internet has been struggling a bit this Junction...{" "}
+            <span className="text-lg">😀</span>
+          </div>
         </div>
       )}
     </div>
@@ -86,11 +89,11 @@ export default function PickSong() {
 function Genre(props) {
   return (
     <div className="mb-8 flex flex-col items-stretch">
-      <div className="font-tourney text-xl lg:text-2xl mb-2 font-black uppercase flex lg:justify-center items-center">
+      <div className="font-tourney text-lg lg:text-2xl mb-2 font-black uppercase flex lg:justify-center items-center">
         {props.title}
         <div className=" h-1 bg-slate-50/50 flex-grow ml-4"></div>
         <Link to={props.shuffleLink}>
-          <div className="border-slate-50/50 border-4 text-slate-50 p-2 text-lg duration-300 transition-colors hover:text-orange-500 hover:border-slate-50 hover:bg-slate-50">
+          <div className="border-slate-50/50 border-4 text-slate-50 p-2 text-sm duration-300 transition-colors hover:text-orange-500 hover:border-slate-50 hover:bg-slate-50">
             Shuffle ▶
           </div>
         </Link>
@@ -102,14 +105,17 @@ function Genre(props) {
 
 function SongLink(props) {
   return (
-    <Link to={`/song/${props.songId}`} onClick={() => {
-      try {
-        DeviceMotionEvent.requestPermission();
-        Tone.start();
-      } catch (e) {
-        console.error('Exception in PickSong.js', e)
-      }
-    }}>
+    <Link
+      to={`/song/${props.songId}`}
+      onClick={() => {
+        try {
+          DeviceMotionEvent.requestPermission();
+          Tone.start();
+        } catch (e) {
+          console.error("Exception in PickSong.js", e);
+        }
+      }}
+    >
       <div className="p-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.80)] uppercase hover:scale-105 duration-300 transition-all hover:bg-slate-50 flex flex-row items-center hover:text-orange-600 hover:skew-y-2">
         <div
           className="w-12 h-12 bg-cover scale-125 lg:-translate-x-6 mr-4"

@@ -40,7 +40,7 @@ export default function Home() {
           } catch (e) {
             console.error('Exception in PickSong.js', e)
           }
-        }}>START SOME SWEATY TUNES</Button>
+        }}>LET'S GO!</Button>
       </Link>
       </div>
       <div className="w-full h-64 relative">
