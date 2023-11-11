@@ -34,7 +34,7 @@ export default function Song() {
 
   useEffect(() => {
     console.log("Song.js: Inititalized");
-    fetch("https://24aa496694f7e6.lhr.life/get_songs")
+    fetch("https://5d45eb26f5aaa2.lhr.life/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData(json.find((d) => d.song_name === params.songId));
@@ -43,7 +43,7 @@ export default function Song() {
           (d) => d.song_name === params.songId
         )?.mp3_links;
         setTracks(
-          finalTracks.map((v) => `https://24aa496694f7e6.lhr.life${v}`)
+          finalTracks.map((v) => `https://5d45eb26f5aaa2.lhr.life${v}`)
         );
         setLoading(false);
       });
@@ -124,6 +124,9 @@ export default function Song() {
         othersTrackVolume,
         drumsTrackVolume,
       ],
+      reverb: bassTrackVolume,
+      wet: bassTrackVolume,
+      playbackRate: drumsTrackVolume,
     });
 
     console.log(
@@ -133,7 +136,6 @@ export default function Song() {
       drumsTrackVolume
     );
   }, [loading, speed]);
-
 
   if (loading) return <div>Loading</div>;
 
@@ -221,10 +223,13 @@ export default function Song() {
 
         <div className="h-32 relative">
           <div className="relative w-48 h-48"></div>
-          <div className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full animate-rock" style={{ animationDuration: `${60 / data.song_bpm}s` }} />
+          <div
+            className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full animate-rock"
+            style={{ animationDuration: `${60 / data.song_bpm}s` }}
+          />
           <div
             className={`absolute left-8 top-8 w-36 h-36 border-2 border-white rounded-full duration-500 transition-all ${
-             bpmDelta > -15 && bpmDelta <15
+              bpmDelta > -15 && bpmDelta < 15
                 ? "border-white drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] border-8"
                 : ""
             }`}
