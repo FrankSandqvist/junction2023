@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
 
-const FootstepsCounter = () => {
+const FootstepsCounter = ({ onUpdate }) => {
   const [stepCount, setStepCount] = useState(0);
   const [isDeviceMotionSupported, setIsDeviceMotionSupported] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  let steps = 0;
+
+  const handleDeviceMotion = (event) => {
+    const { acceleration } = event;
+
+    if (acceleration && Math.abs(acceleration.x) > 10) {
+      // Basic step detection based on acceleration
+      steps++;
+      setStepCount(steps);
+    }
+  };
 
   useEffect(() => {
-    let steps = 0;
-
-    const handleDeviceMotion = (event) => {
-      const { acceleration } = event;
-
-      if (acceleration && Math.abs(acceleration.x) > 10) {
-        // Basic step detection based on acceleration
-        steps++;
-        setStepCount(steps);
-      }
-    };
-
-    if ("DeviceMotionEvent" in window) {
-      window.addEventListener("devicemotion", handleDeviceMotion);
-      setIsDeviceMotionSupported(true);
-    } else {
-      setIsDeviceMotionSupported(false);
-    }
-
     return () => {
       window.removeEventListener("devicemotion", handleDeviceMotion);
     };
@@ -52,18 +44,32 @@ const FootstepsCounter = () => {
 
   const startTracking = () => {
     setStartTime(Date.now());
+    DeviceMotionEvent.requestPermission();
+
+    if ("DeviceMotionEvent" in window) {
+      window.addEventListener("devicemotion", handleDeviceMotion);
+      setIsDeviceMotionSupported(true);
+    } else {
+      setIsDeviceMotionSupported(false);
+    }
   };
+
+  useEffect(() => {
+    onUpdate({ value: averageStepsPerMinute });
+  }, [averageStepsPerMinute, onUpdate]);
 
   return (
     <div>
       <h1>Footsteps Counter</h1>
+      <button onClick={startTracking}>Start Tracking</button>
+
       {isDeviceMotionSupported ? (
         <div>
           <p>Step Count: {stepCount}</p>
           {startTime ? (
             <p>Average steps per minute: {averageStepsPerMinute.toFixed(2)}</p>
           ) : (
-            <button onClick={startTracking}>Start Tracking</button>
+            <></>
           )}
         </div>
       ) : (

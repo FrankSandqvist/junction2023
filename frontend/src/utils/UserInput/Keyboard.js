@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const KeyboardCapture = () => {
+const KeyboardCapture = ({ onUpdate }) => {
   const [pressedKey, setPressedKey] = useState(null);
   const [keyPresses, setKeyPresses] = useState(0);
   const [startTime, setStartTime] = useState(null);
@@ -45,6 +45,10 @@ const KeyboardCapture = () => {
   };
 
   const averageKeyPressesPerMinute = calculateAverageKeyPressesPerMinute();
+
+  useEffect(() => {
+    onUpdate({ value: averageKeyPressesPerMinute})
+  }, [averageKeyPressesPerMinute, onUpdate])
 
   return (
     <div>
