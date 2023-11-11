@@ -222,7 +222,7 @@ export default function Song() {
 
         <div className="h-32 relative">
           <div className="relative w-48 h-48"></div>
-          <div className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full" />
+          <div className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full animate-rock" style={{ animationDuration: `${60 / data.song_bpm}s` }} />
           <div
             className={`absolute left-8 top-8 w-36 h-36 border-2 border-white rounded-full duration-500 transition-all ${
              bpmDelta > -15 && bpmDelta <15

@@ -5,13 +5,13 @@ export default function Home() {
   return (
     <div className="max-w-[38rem] ml-auto mr-auto flex flex-col items-center h-full overflow-hidden relative">
       <div className="py-7 font-black flex flex-col items-center animate-rock">
-        <span className="text-5xl -mb-2 lg:text-7xl ">SWEATY</span>
-        <span className="text-5xl lg:text-7xl">
-          TUNES{" "}
+        <span className="text-5xl -mb-2 lg:text-7xl ">
+          PACE{" "}
           <span className="inline-block scale-150 -translate-x-1 animate-wave">
-            💦
+            🏃
           </span>
         </span>
+        <span className="text-5xl lg:text-7xl">YOURSELF </span>
       </div>
       <div className="mb-8 text-center uppercase text-2xl font-black max-w-md">
         Your{" "}
@@ -31,9 +31,9 @@ export default function Home() {
         <p className="mb-4">...or you can test it on your computer:</p>
       </div>
       <div className="mb-32">
-      <Link to="/pick-song">
-        <Button>START SOME SWEATY TUNES</Button>
-      </Link>
+        <Link to="/pick-song">
+          <Button>START SOME SWEATY TUNES</Button>
+        </Link>
       </div>
       <div className="w-full h-64 relative">
         <img
