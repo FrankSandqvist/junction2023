@@ -8,6 +8,30 @@ export function clampNumber(input, min, max) {
   return input < min ? min : input > max ? max : input;
 }
 
+function adjustBPM(currentBPM = 0, speed) {
+    // Define minimum and maximum limits for BPM growth
+    const minGrowthFactor = 1;
+    const medGrowthFactor = 6; 
+    const maxGrowthFactor = 12;
+
+    // Adjust the growth rate based on the current BPM
+    let growthFactor;
+
+    if (currentBPM < data.song_bpm * 0.5) {
+        // If current BPM is less than 50% of original, increase growth rate
+        growthFactor = maxGrowthFactor;
+    } else if (currentBPM > data.song_bpm * 1.2) {
+        // If current BPM is more than 120% of original, limit growth rate
+        growthFactor = minGrowthFactor;
+    } else {
+        // Linearly interpolate growth factor between min and max
+        growthFactor = medGrowthFactor;
+    }
+
+
+    return speed * growthFactor;
+}
+
 export function mapNumber(current, in_min, in_max, out_min, out_max) {
   const mapped =
     ((current - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
@@ -30,8 +54,10 @@ export default function Song() {
 
   const [tracksParams, setTrackParams] = useState({});
 
-  const bpm = speed * 6;
+  const bpm = adjustBPM(bpm, speed);
 
+
+  
   useEffect(() => {
     console.log("Song.js: Inititalized");
     fetch("https://5d45eb26f5aaa2.lhr.life/get_songs")
@@ -217,7 +243,7 @@ export default function Song() {
           </div>
           <div className="flex flex-row font-bold">
             <div className="w-56">You're running</div>
-            <div className="">{speed * 6} BPM</div>
+            <div className="">{bpm} BPM</div>
           </div>
         </div>
 
@@ -235,7 +261,7 @@ export default function Song() {
             }`}
             style={{
               transform: `scale(${
-                1 - Math.min(1, (data.song_bpm - speed * 6) / 100)
+                1 - Math.min(1, (data.song_bpm - bpm) / 100)
               })`,
             }}
           />
