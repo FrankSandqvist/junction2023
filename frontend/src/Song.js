@@ -16,6 +16,11 @@ export default function Song() {
 
   const [loaded, setLoaded] = useState(0);
 
+  const audio1Ref = useRef();
+  const audio2Ref = useRef();
+  const audio3Ref = useRef();
+  const audio4Ref = useRef();
+
   useEffect(() => {
     fetch("https://011a660d1d3d8f.lhr.life/get_songs")
       .then((res) => res.json())
@@ -24,17 +29,14 @@ export default function Song() {
         setLoading(false);
       });
 
-    console.log(speed);
-    setCssAnimationDurationLastUpdated(+(new Date()));
+    setCssAnimationDurationLastUpdated(+new Date());
   }, []);
 
   const videoRef = useRef();
 
   useEffect(() => {
-    const duration = Math.min(2, Math.max(0.3, 2 - (speed / 10)));
+    const duration = Math.min(2, Math.max(0.3, 2 - speed / 10));
     setCssAnimationDuration(duration);
-    
-    console.log(speed);
 
     clearTimeout(cssAnimationDurationRef.current);
     if (speed === 0) {
@@ -45,12 +47,10 @@ export default function Song() {
       return;
     }
 
-    console.log("Duration",duration);
-
     // console.log("setting", duration)
     cssAnimationDurationRef.current = setTimeout(() => {
       setCssAnimationDurationLastUpdated(+new Date());
-    }, (duration * 1000) + (duration * 1000 % 500));
+    }, duration * 1000 + ((duration * 1000) % 500));
   }, [cssAnimationDurationLastUpdated]);
 
   useEffect(() => {
@@ -62,13 +62,38 @@ export default function Song() {
     if (loading) return;
 
     videoRef.current.playbackRate = Math.max(0.1, speed / 6);
+
+    const bpm = speed * 10;
+    const bpmDelta = data.song_bpm - bpm;
+
+    //  const reverbAmount = ;
+
+    const vocalsTrackVolume = Math.min(1, 0.3 + Math.max(0, 1 - bpmDelta / 50));;
+    const bassTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 50));
+    const othersTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 30));
+    const drumsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 10));
+
+    audio1Ref.current.volume = vocalsTrackVolume;
+    audio2Ref.current.volume = bassTrackVolume;
+    audio3Ref.current.volume = othersTrackVolume;
+    audio4Ref.current.volume = drumsTrackVolume;
+
+    console.log(
+      vocalsTrackVolume,
+      bassTrackVolume,
+      othersTrackVolume,
+      drumsTrackVolume
+    );
   }, [loading, speed]);
 
   useEffect(() => {
     if (loaded < 4) return;
 
     setTimeout(() => {
-      document.querySelectorAll("audio").forEach((e) => e.play());
+      audio1Ref.current.play();
+      audio2Ref.current.play();
+      audio3Ref.current.play();
+      audio4Ref.current.play();
     }, 2000);
   }, [loaded]);
 
@@ -135,29 +160,61 @@ export default function Song() {
           className="mb-20"
         />
 
-        <p>{speed*10} BPM</p>
+        <p>{speed * 10} BPM</p>
 
         <p
           className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock"
           style={{
             fontStretch: "50%",
-            animationDuration: speed ? `${(50 - speed)*0.01666}s` : "0s",
+            animationDuration: speed ? `${(50 - speed) * 0.01666}s` : "0s",
           }}
         >
           RUNNING
         </p>
-        {data.mp3_links.map((mp3) => (
-          <audio
-            key={mp3.song_name}
-            controls
-            onLoadedData={() => setLoaded((l) => l + 1)}
-          >
-            <source
-              src={`https://011a660d1d3d8f.lhr.life${mp3}`}
-              type="audio/ogg"
-            ></source>
-          </audio>
-        ))}
+        <audio
+          key={data.mp3_links[0].song_name}
+          controls
+          onLoadedData={() => setLoaded((l) => l + 1)}
+          ref={audio1Ref}
+        >
+          <source
+            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[0]}`}
+            type="audio/ogg"
+          ></source>
+        </audio>
+        <audio
+          key={data.mp3_links[1].song_name}
+          controls
+          onLoadedData={() => setLoaded((l) => l + 1)}
+          ref={audio2Ref}
+        >
+          <source
+            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[1]}`}
+            type="audio/ogg"
+          ></source>
+        </audio>
+        <audio
+          key={data.mp3_links[2].song_name}
+          controls
+          onLoadedData={() => setLoaded((l) => l + 1)}
+          ref={audio3Ref}
+        >
+          <source
+            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[2]}`}
+            type="audio/ogg"
+          ></source>
+        </audio>
+        <audio
+          key={data.mp3_links[3].song_name}
+          controls
+          onLoadedData={() => setLoaded((l) => l + 1)}
+          ref={audio4Ref}
+        >
+          <source
+            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[3]}`}
+            type="audio/ogg"
+          ></source>
+        </audio>
 
         <div className="absolute left-4 bottom-4">
           <Link to="/pick-song">
