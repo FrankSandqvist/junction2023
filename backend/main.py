@@ -12,12 +12,12 @@ class song():
         self.json_data = json.load(json_data)
         full_location = os.path.join(folder_location, 
 os.path.basename(folder_location))
-        if not 'song_bpm' in self.json_data:
-            tempo = self.count_bpm(os.path.join(folder_location, 
-os.path.basename(folder_location) + '.mp3'))
-            self.json_data['song_bpm'] = tempo
-            with open(folder_location + '/data.json', 'w') as fp:
-                json.dump(self.json_data, fp)
+#        if not 'song_bpm' in self.json_data:
+#            tempo = self.count_bpm(os.path.join(folder_location, 
+#os.path.basename(folder_location) + '.mp3'))
+#            self.json_data['song_bpm'] = tempo
+#            with open(folder_location + '/data.json', 'w') as fp:
+#                json.dump(self.json_data, fp)
         self.json_data['mp3_links'] = ['/music/'+ folder_location + 
 '/vocals.mp3',  '/music/'+ folder_location + '/drums.mp3', '/music/'+ 
 folder_location + '/bass.mp3','/music/'+ folder_location + '/other.mp3']
