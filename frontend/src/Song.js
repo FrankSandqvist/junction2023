@@ -90,10 +90,10 @@ export default function Song() {
     if (loaded < 4) return;
 
     setTimeout(() => {
-      audio1Ref.current.play();
-      audio2Ref.current.play();
-      audio3Ref.current.play();
-      audio4Ref.current.play();
+      // audio1Ref.current.play();
+      // audio2Ref.current.play();
+      // audio3Ref.current.play();
+      // audio4Ref.current.play();
     }, 2000);
   }, [loaded]);
 
@@ -104,6 +104,13 @@ export default function Song() {
     setSpeed(value);
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
   };
+
+  const handleStartUserInput = () => {
+    audio1Ref.current.play();
+    audio2Ref.current.play();
+    audio3Ref.current.play();
+    audio4Ref.current.play();
+  }
 
   return (
     <div className="flex flex-row items-stretch h-full w-full">
@@ -223,7 +230,7 @@ export default function Song() {
           </Link>
         </div>
       </div>
-      <UserInput onUpdate={handleUserInputUpdate} />
+      <UserInput onUpdate={handleUserInputUpdate} onClick={handleStartUserInput} />
     </div>
   );
 }
