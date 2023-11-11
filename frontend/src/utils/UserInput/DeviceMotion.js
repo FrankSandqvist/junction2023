@@ -12,6 +12,7 @@ const FootstepsCounter = (props) => {
       const { acceleration } = event;
       if (acceleration && Math.abs(acceleration.x) > 10) {
         keypressesTimestamps.push(Date.now());
+        props.onBeat();
       }
     };
 

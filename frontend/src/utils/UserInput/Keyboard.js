@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const KeyboardCapture = ({ onUpdate }) => {
+const KeyboardCapture = ({ onUpdate,onBeat}) => {
   const [startTime, setStartTime] = useState(null);
 
   useEffect(() => {
@@ -13,6 +13,7 @@ const KeyboardCapture = ({ onUpdate }) => {
       if (!startTime) {
         setStartTime(Date.now());
       }
+      onBeat()
       keypressesTimestamps.push(Date.now())
     };
 

@@ -136,11 +136,11 @@ export default function Song() {
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
     setSpeed(value);
-    setBeat(true);
-    setTimeout(() => {
-      setBeat(false);
-    }, (1000 / value) * 10);
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
+  };
+
+  const handleBeat = () => {
+    setBeat((b) => !b);
   };
 
   const handleStartUserInput = () => {
@@ -149,6 +149,8 @@ export default function Song() {
     audio3Ref.current.play();
     audio4Ref.current.play();
   };
+
+  const bpmDelta = bpm - data.song_bpm;
 
   return (
     <div className="flex flex-row items-stretch h-full w-full">
@@ -186,7 +188,9 @@ export default function Song() {
           <p className="uppercase -mb-4 z-10">
             Now playing <span className="ml-2">▶</span>
           </p>
-          <p className="text-2xl z-10">{data.song_name}</p>
+          <p className="text-2xl z-10">
+            {data.song_name} by {data.artist}
+          </p>
           <div
             className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center grayscale  contrast-200 brightness-200"
             style={{
@@ -221,7 +225,7 @@ export default function Song() {
           <div className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full" />
           <div
             className={`absolute left-8 top-8 w-36 h-36 border-2 border-white rounded-full duration-500 transition-all ${
-              1 - Math.min(1, data.song_bpm - speed * 6) > 0.8
+             bpmDelta > -15 && bpmDelta <15
                 ? "border-white drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] border-8"
                 : ""
             }`}
@@ -232,14 +236,31 @@ export default function Song() {
             }}
           />
         </div>
-
         <p
-          className={`font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 ${
+          className={`font-tektur font-black  shadow-slate-200 text-5xl duration-300 transition-transform -mt-12 mb-32 ${
             beat % 2 ? "scale-110" : "scale-100"
           }`}
+          style={{
+            filter: `drop-shadow(0 0 10px ${
+              bpmDelta < -40
+                ? "red"
+                : bpmDelta < -20
+                ? "white"
+                : bpmDelta > 20
+                ? "red"
+                : "white"
+            })`,
+          }}
         >
-          FASTER
+          {bpmDelta < -40
+            ? "FASTER!"
+            : bpmDelta < -20
+            ? "OK!"
+            : bpmDelta > 20
+            ? "SLOW DOWN"
+            : "PERFECT!!!!"}
         </p>
+
         <audio
           key={data.mp3_links[0].song_name}
           controls
@@ -292,6 +313,7 @@ export default function Song() {
         </div>
       </div>
       <UserInput
+        onBeat={handleBeat}
         onUpdate={handleUserInputUpdate}
         onClick={handleStartUserInput}
       />
