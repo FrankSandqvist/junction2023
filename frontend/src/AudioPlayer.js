@@ -58,7 +58,7 @@ const AudioPlayer = (props) => {
 
     if (audioPlaying) {
       // handleReverbChange(mapNumber(playbackRate, 0, 1, 10, 0));
-      handlePlaybackRateChange(mapNumber(playbackRate, 0, 1, 0.9, 1.2));
+      handlePlaybackRateChange(mapNumber(playbackRate, 0, 1, 0.9, 1));
     }
 
     // handleWetChange(reverseNormalizeValue(wet, 0, 100, 0, 1) / 100);
