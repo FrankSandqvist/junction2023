@@ -68,7 +68,7 @@ export default function Song() {
 
     //  const reverbAmount = ;
 
-    const bassTrackVolume = Math.min(1, 0.3 + Math.max(0, 1 - bpmDelta / 50));;
+    const bassTrackVolume = Math.min(1, 0.3 + Math.max(0, 1 - bpmDelta / 50));
     const vocalsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 50));
     const othersTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 30));
     const drumsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 10));
@@ -167,8 +167,17 @@ export default function Song() {
           className="mb-20"
         />
 
-<p>Song is:{data.song_bpm} BPM</p>
-<p>You run:{speed * 12} BPM</p>
+        <p>Song is:{data.song_bpm} BPM</p>
+        <p>You run:{speed * 12} BPM</p>
+
+        <div className="h-32 relative">
+          <div className="relative w-48 h-48"></div>
+          <div className="absolute left-8 top-8 w-36 h-36 border-2 border-slate-200 rounded-full" />
+          <div
+            className={`absolute left-8 top-8 w-36 h-36 border-2 border-slate-200 rounded-full duration-500 transition-all ${1 - Math.min(1, (data.song_bpm - speed * 12)) > 0.8 ? "border-orange-100 drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] border-8":""}`}
+            style={{ transform: `scale(${1 - Math.min(1, (data.song_bpm - speed * 12) / 100)})` }}
+          />
+        </div>
 
         <p
           className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock"
