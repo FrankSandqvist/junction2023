@@ -1,11 +1,28 @@
-function App() {
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Home from "./Home";
+import PickSong from "./PickSong";
+import Song from "./Song";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/pick-song",
+    element: <PickSong />,
+  },
+  {
+    path: "/song/:songId",
+    element: <Song />,
+  },
+]);
+
+export default function App() {
+  
   return (
-    <div className="absolute w-full h-full flex items-center justify-center">
-      <header className=" w-64 h-64 bg-fuchsia-800 text-fuchsia-100 font-bold rounded-lg shadow-lg shadow-fuchsia-400 flex items-center justify-center">
-        Woot!
-      </header>
+    <div className="absolute w-full h-full text-slate-50 bg-orange-500 font-unbounded">
+      <RouterProvider router={router} />
     </div>
   );
 }
-
-export default App;
