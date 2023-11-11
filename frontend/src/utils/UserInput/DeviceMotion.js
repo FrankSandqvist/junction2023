@@ -59,23 +59,24 @@ const FootstepsCounter = ({ onUpdate }) => {
   }, [averageStepsPerMinute, onUpdate]);
 
   return (
-    <div>
-      <h1>Footsteps Counter</h1>
-      <button onClick={startTracking}>Start Tracking</button>
+    <></>
+    // <div>
+    //   <h1>Footsteps Counter</h1>
+    //   <button onClick={startTracking}>Start Tracking</button>
 
-      {isDeviceMotionSupported ? (
-        <div>
-          <p>Step Count: {stepCount}</p>
-          {startTime ? (
-            <p>Average steps per minute: {averageStepsPerMinute.toFixed(2)}</p>
-          ) : (
-            <></>
-          )}
-        </div>
-      ) : (
-        <p>DeviceMotion API is not supported on this device.</p>
-      )}
-    </div>
+    //   {isDeviceMotionSupported ? (
+    //     <div>
+    //       <p>Step Count: {stepCount}</p>
+    //       {startTime ? (
+    //         <p>Average steps per minute: {averageStepsPerMinute.toFixed(2)}</p>
+    //       ) : (
+    //         <></>
+    //       )}
+    //     </div>
+    //   ) : (
+    //     <p>DeviceMotion API is not supported on this device.</p>
+    //   )}
+    // </div>
   );
 };
 
