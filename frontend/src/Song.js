@@ -124,7 +124,7 @@ export default function Song() {
         othersTrackVolume,
         drumsTrackVolume,
       ],
-      reverb: bassTrackVolume,
+      reverb: drumsTrackVolume,
       wet: bassTrackVolume,
       playbackRate: drumsTrackVolume,
     });

@@ -4,101 +4,33 @@ import * as Tone from "tone";
 let players = [1, 2, 3, 4];
 let reverb = new Tone.Reverb();
 for (let i = 0; i < 4; i++) {
-  const player = new Tone.Player().toDestination();
+  const player = new Tone.Player({ loop: true }).toDestination();
   player.connect(reverb);
   players[i] = player;
 }
+
 // Connect the reverb to the destination
 
-function reverseNormalizeValue(normalizedValue) {
-  // Minimum and maximum values of the input scale
-  const minInput = -60;
-  const maxInput = 6;
-
-  // Minimum and maximum values of the output scale
-  const minOutput = 0;
-  const maxOutput = 100;
-
-  // Reverse normalization from the output scale to the input scale
-  return (
-    ((normalizedValue - minOutput) / (maxOutput - minOutput)) *
-      (maxInput - minInput) +
-    minInput
-  );
+export function clampNumber(input, min, max) {
+  return input < min ? min : input > max ? max : input;
 }
+
+export function mapNumber(current, in_min, in_max, out_min, out_max) {
+  const mapped =
+    ((current - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+  return clampNumber(mapped, out_min, out_max);
+}
+
 reverb.toDestination();
 
 const AudioPlayer = (props) => {
-  // const [reverb, setReverb] = useState(new Tone.Reverb());
-  // const [players, setPlayers] = useState([1, 2, 3, 4]); //!!! Don't forget to inititalize with props.tracks array
-
-  const [reverbDebugValue, setReverbDebugValue] = useState();
-  const [wetDebugValue, setWetDebugValue] = useState();
-  const [playbackRate, setPlaybackRate] = useState();
-
-  // const [chorus, setChorus] = useState(
-  //   new Tone.Chorus({
-  //     wet: 1,
-  //   })
-  //     .toDestination()
-  //     .start()
-  // );
-
-  // const [chorusChannel, setChorusChannel] = useState(
-  //   new Tone.Channel({ volume: -60 }).connect(chorus)
-  // );
-
-  // const [cheby, setCheby] = useState(new Tone.Chebyshev(50).toDestination());
-  // const [chebyChannel, setChebyChannel] = useState(
-  //   new Tone.Channel({ volume: -60 }).connect(cheby)
-  // );
-
-  // const [reverbTone, setReverbTone] = useState(
-  //   new Tone.Reverb(3).toDestination()
-  // );
-  // const [reverbToneChannel, setReverbToneChannel] = useState(
-  //   new Tone.Channel({ volume: -60 }).connect(reverbTone)
-  // );
-
-  const [chorusDebugSend, setChorusDebugSend] = useState();
-  const [chebyshevDebugSend, setChebyshevDebugSend] = useState();
-  const [reverbToneDebugSend, setReverbToneDebugSend] = useState();
-
   const [loaded, setLoaded] = useState(false);
+  const [audioPlaying, setAudioPlaying] = useState(false);
 
   useEffect(() => {
-    // Load the player with a URL to your audio file
-    // Connect the player to the reverb
-    // players.forEach((player) => {
-    //   player = new Tone.Player({ loop: true }).toDestination();
-    //   player.connect(reverb);
-    // });
-
-    // console.log(player);
-    setReverbDebugValue(reverb.decay);
-    setWetDebugValue(reverb.wet.value);
-    setPlaybackRate(1);
-    setChorusDebugSend(-60);
-    setChebyshevDebugSend(-60);
-    setReverbToneDebugSend(-60);
-
-    // chorusChannel.receive("chorus");
-    // chebyChannel.receive("cheby");
-    // reverbToneChannel.receive("reverbTone");
-
-    // send the player to all of the channels
-    // const playerChannel = new Tone.Channel().toDestination();
-    // playerChannel.send("chorus");
-    // playerChannel.send("cheby");
-    // playerChannel.send("reverbTone");
-
-    // players.forEach((player) => player.connect(playerChannel));
     return () => {
-      // players.forEach((player) => player.dispose());
-      // Tone.Transport.dispose()
-      // reverb.dispose();
-      // console.log('AudioPlayer: Unmounting')
       players.forEach((player, idx) => player.stop());
+      setAudioPlaying(false);
     };
   }, []);
 
@@ -116,21 +48,25 @@ const AudioPlayer = (props) => {
     if (!Object.keys(props?.params || {})?.length) {
       return;
     }
-    const { volume /*, reverb, wet, playbackRate*/ } = props.params;
+    const { volume, reverb, wet, playbackRate } = props.params;
 
-    console.log("AudioPlayer: volumes", volume);
-
+    // console.log("AudioPlayer: volumes", mapNumber(playbackRate, 0, 1, 0.9, 1.2), 100 - mapNumber(playbackRate, 0, 1, 0.1, 50), props.params);
     players.forEach(
       (player, idx) =>
-        (player.volume.value = reverseNormalizeValue(volume[idx] * 100))
+        (player.volume.value = mapNumber(volume[idx] * 100, 0, 1, -60, 6))
     );
-    // handleReverbChange(reverb);
-    // handleWetChange(wet);
-    // handlePlaybackRateChange(playbackRate);
+
+    if (audioPlaying) {
+      // handleReverbChange(mapNumber(playbackRate, 0, 1, 10, 0));
+      handlePlaybackRateChange(mapNumber(playbackRate, 0, 1, 0.9, 1.2));
+    }
+
+    // handleWetChange(reverseNormalizeValue(wet, 0, 100, 0, 1) / 100);
+    // handlePlaybackRateChange(reverseNormalizeValue(playbackRate, 0, 1, 0.2, 1.5));
     // handleChorusChange(chorus);
     // handleChebyChange(cheby);
     // handleReverbToneChange(reverbTone);
-  }, [props.params]);
+  }, [props.params, audioPlaying]);
 
   const handlePlay = async () => {
     // Start the audio context
@@ -139,23 +75,32 @@ const AudioPlayer = (props) => {
     await Tone.loaded();
     players.forEach((player) => player.start());
     console.log("AudioPlayer: started", players);
+    setTimeout(() => {
+      setAudioPlaying(true);
+    }, 2000);
+    // setTimeout(() => {
+    //   handleReverbChange(60);
+    //   handlePlaybackRateChange(2)
+    // }, 10000);
   };
 
-  const handleReverbChange = (event) => {
-    const value = parseFloat(event.target.value);
-    setReverbDebugValue(value);
-    reverb.decay = value;
+  const handleReverbChange = (value) => {
+    const reverbValue = parseFloat(value);
+
+    // When changing properties of the reverb, disconnect and reconnect players
+    players.forEach((player) => player.disconnect(reverb));
+    // Apply new settings to reverb
+    reverb.set({ decay: reverbValue });
+    players.forEach((player) => player.connect(reverb));
   };
 
   const handleWetChange = (value) => {
     const wetValue = parseFloat(value);
-    setWetDebugValue(wetValue);
     reverb.wet.value = wetValue;
   };
 
   const handlePlaybackRateChange = (value) => {
     players.forEach((player) => (player.playbackRate = parseFloat(value)));
-    setPlaybackRate(value);
   };
 
   // const handleChorusChange = (value) => {
