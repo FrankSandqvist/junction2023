@@ -22,8 +22,7 @@ os.path.basename(folder_location) + '.mp3'))
             self.json_data['img'] = ''
         self.json_data['mp3_links'] = ['/music/'+ folder_location + 
 '/vocals.mp3',  '/music/'+ folder_location + '/drums.mp3', '/music/'+ 
-folder_location + '/bass.mp3','/music/'+ folder_location + '/other.mp3', 
-'/music/'+ folder_location + '/song.mp3']
+folder_location + '/bass.mp3','/music/'+ folder_location + '/other.mp3']
 
 
     def count_bpm(self, song_location):
