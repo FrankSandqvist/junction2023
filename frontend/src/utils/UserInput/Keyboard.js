@@ -20,7 +20,7 @@ const KeyboardCapture = ({ onUpdate }) => {
 
     stepsCounterInterval = setInterval(() => {
       // console.log('keypressesTimestamps', keypressesTimestamps)
-      const filteredKeypressesTimestamps = keypressesTimestamps.filter(v => v >= Date.now() - 1 * 5000);
+      const filteredKeypressesTimestamps = keypressesTimestamps.filter(v => v >= Date.now() - 10000);
       keypressesTimestamps = [...filteredKeypressesTimestamps];
       onUpdate({ value: filteredKeypressesTimestamps.length })
     }, 250)

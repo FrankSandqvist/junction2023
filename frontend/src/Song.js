@@ -3,6 +3,16 @@ import { Link, useParams } from "react-router-dom";
 import Button from "./Button";
 import UserInput from "./utils/UserInput";
 
+export function clampNumber(input, min, max) {
+  return input < min ? min : input > max ? max : input;
+}
+
+export function mapNumber(current, in_min, in_max, out_min, out_max) {
+  const mapped =
+    ((current - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+  return clampNumber(mapped, out_min, out_max);
+}
+
 export default function Song() {
   const params = useParams();
 
@@ -13,6 +23,7 @@ export default function Song() {
     useState(0);
   const [cssAnimationDuration, setCssAnimationDuration] = useState(null);
   const [data, setData] = useState(null);
+  const [beat, setBeat] = useState(false);
 
   const [loaded, setLoaded] = useState(0);
 
@@ -21,8 +32,10 @@ export default function Song() {
   const audio3Ref = useRef();
   const audio4Ref = useRef();
 
+  const bpm = speed * 6;
+
   useEffect(() => {
-    fetch("https://011a660d1d3d8f.lhr.life/get_songs")
+    fetch("https://24aa496694f7e6.lhr.life/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData(json.find((d) => d.song_name === params.songId));
@@ -63,15 +76,36 @@ export default function Song() {
 
     videoRef.current.playbackRate = Math.max(0.1, speed / 6);
 
-    const bpm = speed * 12;
-    const bpmDelta = data.song_bpm - bpm;
+    //const reverbAmount = ;
 
-    //  const reverbAmount = ;
-
-    const bassTrackVolume = Math.min(1, 0.3 + Math.max(0, 1 - bpmDelta / 50));
-    const vocalsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 50));
-    const othersTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 30));
-    const drumsTrackVolume = Math.min(1, 0 + Math.max(0, 1 - bpmDelta / 10));
+    const bassTrackVolume = mapNumber(
+      bpm,
+      data.song_bpm * 0.2,
+      data.song_bpm * 0.4,
+      0.4,
+      1
+    );
+    const vocalsTrackVolume = mapNumber(
+      bpm,
+      data.song_bpm * 0.4,
+      data.song_bpm * 0.6,
+      0.1,
+      1
+    );
+    const othersTrackVolume = mapNumber(
+      bpm,
+      data.song_bpm * 0.6,
+      data.song_bpm * 0.8,
+      0,
+      1
+    );
+    const drumsTrackVolume = mapNumber(
+      bpm,
+      data.song_bpm * 0.8,
+      data.song_bpm,
+      0.1,
+      1
+    );
 
     audio1Ref.current.volume = vocalsTrackVolume;
     audio2Ref.current.volume = bassTrackVolume;
@@ -90,10 +124,10 @@ export default function Song() {
     if (loaded < 4) return;
 
     setTimeout(() => {
-      // audio1Ref.current.play();
-      // audio2Ref.current.play();
-      // audio3Ref.current.play();
-      // audio4Ref.current.play();
+      audio1Ref.current.play();
+      audio2Ref.current.play();
+      audio3Ref.current.play();
+      audio4Ref.current.play();
     }, 2000);
   }, [loaded]);
 
@@ -102,6 +136,10 @@ export default function Song() {
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
     setSpeed(value);
+    setBeat(true);
+    setTimeout(() => {
+      setBeat(false);
+    }, (1000 / value) * 10);
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
   };
 
@@ -110,7 +148,7 @@ export default function Song() {
     audio2Ref.current.play();
     audio3Ref.current.play();
     audio4Ref.current.play();
-  }
+  };
 
   return (
     <div className="flex flex-row items-stretch h-full w-full">
@@ -167,26 +205,40 @@ export default function Song() {
           className="mb-20"
         />
 
-        <p>Song is:{data.song_bpm} BPM</p>
-        <p>You run:{speed * 12} BPM</p>
+        <div className="border border-slate-50 flex flex-col p-4">
+          <div className="flex flex-row">
+            <div className="w-56">Song is</div>
+            <div>{data.song_bpm} BPM</div>
+          </div>
+          <div className="flex flex-row font-bold">
+            <div className="w-56">You're running</div>
+            <div className="">{speed * 6} BPM</div>
+          </div>
+        </div>
 
         <div className="h-32 relative">
           <div className="relative w-48 h-48"></div>
-          <div className="absolute left-8 top-8 w-36 h-36 border-2 border-slate-200 rounded-full" />
+          <div className="absolute left-8 top-8 w-36 h-36 border-2 border-white/70 rounded-full" />
           <div
-            className={`absolute left-8 top-8 w-36 h-36 border-2 border-slate-200 rounded-full duration-500 transition-all ${1 - Math.min(1, (data.song_bpm - speed * 12)) > 0.8 ? "border-orange-100 drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] border-8":""}`}
-            style={{ transform: `scale(${1 - Math.min(1, (data.song_bpm - speed * 12) / 100)})` }}
+            className={`absolute left-8 top-8 w-36 h-36 border-2 border-white rounded-full duration-500 transition-all ${
+              1 - Math.min(1, data.song_bpm - speed * 6) > 0.8
+                ? "border-white drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] border-8"
+                : ""
+            }`}
+            style={{
+              transform: `scale(${
+                1 - Math.min(1, (data.song_bpm - speed * 6) / 100)
+              })`,
+            }}
           />
         </div>
 
         <p
-          className="font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 animate-rock"
-          style={{
-            fontStretch: "50%",
-            animationDuration: speed ? `${(50 - speed) * 0.01666}s` : "0s",
-          }}
+          className={`font-tektur font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.65)] shadow-slate-200 text-5xl py-8 ${
+            beat % 2 ? "scale-110" : "scale-100"
+          }`}
         >
-          RUNNING
+          FASTER
         </p>
         <audio
           key={data.mp3_links[0].song_name}
@@ -195,7 +247,7 @@ export default function Song() {
           ref={audio1Ref}
         >
           <source
-            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[0]}`}
+            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[0]}`}
             type="audio/ogg"
           ></source>
         </audio>
@@ -206,7 +258,7 @@ export default function Song() {
           ref={audio2Ref}
         >
           <source
-            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[1]}`}
+            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[1]}`}
             type="audio/ogg"
           ></source>
         </audio>
@@ -217,7 +269,7 @@ export default function Song() {
           ref={audio3Ref}
         >
           <source
-            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[2]}`}
+            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[2]}`}
             type="audio/ogg"
           ></source>
         </audio>
@@ -228,7 +280,7 @@ export default function Song() {
           ref={audio4Ref}
         >
           <source
-            src={`https://011a660d1d3d8f.lhr.life${data.mp3_links[3]}`}
+            src={`https://24aa496694f7e6.lhr.life${data.mp3_links[3]}`}
             type="audio/ogg"
           ></source>
         </audio>
@@ -239,7 +291,10 @@ export default function Song() {
           </Link>
         </div>
       </div>
-      <UserInput onUpdate={handleUserInputUpdate} onClick={handleStartUserInput} />
+      <UserInput
+        onUpdate={handleUserInputUpdate}
+        onClick={handleStartUserInput}
+      />
     </div>
   );
 }
