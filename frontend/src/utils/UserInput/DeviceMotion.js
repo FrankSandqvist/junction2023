@@ -43,7 +43,7 @@ const FootstepsCounter = (props) => {
       );
       keypressesTimestamps = [...filteredKeypressesTimestamps];
       props.onUpdate({ value: filteredKeypressesTimestamps.length });
-    }, 300);
+    }, 100);
 
     return () => {
       window.removeEventListener("devicemotion", handleDeviceMotion);
