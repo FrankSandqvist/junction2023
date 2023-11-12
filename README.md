@@ -2,7 +2,7 @@
 
 ---
 ### Screencast:
-![screencast]()
+![screencast](https://github.com/FrankSandqvist/junction2023/blob/main/assets/screencast.gif?raw=true)
 
 ---
 ### About:
