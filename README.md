@@ -18,6 +18,8 @@ Pace Yourself ...
 ### Demo Link
 The app is available online and can be tested out by anyone at https://junction2023-nine.vercel.app
 
+![](assets/pace-yourself-001.png)
+
 ---
 ### Also available for running locally:
 #### Frontend:
