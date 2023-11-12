@@ -35,7 +35,7 @@ export default function Song() {
 
   useEffect(() => {
     console.log("Song.js: Inititalized");
-    fetch("https://5d45eb26f5aaa2.lhr.life/get_songs")
+    fetch("https://2046a923f16c8f.lhr.life/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData(json.find((d) => d.song_name === params.songId));
@@ -44,7 +44,7 @@ export default function Song() {
           (d) => d.song_name === params.songId
         )?.mp3_links;
         setTracks(
-          finalTracks.map((v) => `https://5d45eb26f5aaa2.lhr.life${v}`)
+          finalTracks.map((v) => `https://2046a923f16c8f.lhr.life${v}`)
         );
         setLoading(false);
       });
@@ -143,7 +143,7 @@ export default function Song() {
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
     // UGLY LATE NIGHT FIX, FOOS!
-    
+
     setSpeed(value);
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
   };

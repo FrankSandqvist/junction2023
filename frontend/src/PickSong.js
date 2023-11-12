@@ -7,7 +7,7 @@ export default function PickSong() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch("https://5d45eb26f5aaa2.lhr.life/get_songs")
+    fetch("https://2046a923f16c8f.lhr.life/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData([
