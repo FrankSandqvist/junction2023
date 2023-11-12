@@ -31,7 +31,7 @@ export default function Song() {
 
   const [tracksParams, setTrackParams] = useState({});
 
-  const bpm = speed * 6;
+  const bpm = speed * 4;
 
   useEffect(() => {
     console.log("Song.js: Inititalized");
@@ -143,7 +143,8 @@ export default function Song() {
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
     // UGLY LATE NIGHT FIX, FOOS!
-    setSpeed(Math.min(value, Math.round(data.song_bpm / 5) ));
+    
+    setSpeed(value);
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
   };
 
@@ -221,7 +222,7 @@ export default function Song() {
           </div>
           <div className="flex flex-row font-bold">
             <div className="w-56">You're running</div>
-            <div className="">{speed * 6} BPM</div>
+            <div className="">{bpm} BPM</div>
           </div>
         </div>
 
@@ -239,7 +240,7 @@ export default function Song() {
             }`}
             style={{
               transform: `scale(${
-                1 - Math.min(1, (data.song_bpm - speed * 6) / 100)
+                1 - Math.min(1, (data.song_bpm - bpm) / 100)
               })`,
             }}
           />
