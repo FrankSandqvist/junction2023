@@ -25,8 +25,6 @@ The app is available online and can be tested out by anyone at https://junction2
 #### Frontend:
 - `cd frontend && npm install`
 - `npm start` will open http://localhost:3000 in your default browser
-#### Backend:
-- 
 
 ---
 
