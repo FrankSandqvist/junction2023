@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Button from "../../Button";
 
+let lastEvent = new Date();
+
 const FootstepsCounter = (props) => {
   const [isDeviceMotionSupported, setIsDeviceMotionSupported] = useState(false);
 
@@ -9,11 +11,20 @@ const FootstepsCounter = (props) => {
     let stepsCounterInterval = null;
 
     const handleDeviceMotion = (event) => {
-      // console.log('devicemotion', event)
       const { acceleration } = event;
-      if (acceleration && Math.abs(acceleration.x) > 10) {
+      // if (acceleration && Math.abs(acceleration.x) > 10) {
+      //   keypressesTimestamps.push(Date.now());
+      // }
+      if (
+        acceleration &&
+        Math.abs(acceleration.x) +
+          Math.abs(acceleration.y) +
+          Math.abs(acceleration.z) / 3 >
+          10 &&
+        lastEvent < new Date() - 200
+      ) {
         keypressesTimestamps.push(Date.now());
-        props.onBeat();
+        lastEvent = new Date();
       }
     };
 
@@ -31,7 +42,7 @@ const FootstepsCounter = (props) => {
       );
       keypressesTimestamps = [...filteredKeypressesTimestamps];
       props.onUpdate({ value: filteredKeypressesTimestamps.length });
-    }, 300);
+    }, 1000);
 
     return () => {
       window.removeEventListener("devicemotion", handleDeviceMotion);
@@ -40,15 +51,14 @@ const FootstepsCounter = (props) => {
   }, []);
 
   return (
-    <></>
-    // <Button
-    //   onClick={() => {
-    //     DeviceMotionEvent.requestPermission();
-    //     props.onClick();
-    //   }}
-    // >
-    //   Start
-    // </Button>
+    <Button
+      onClick={() => {
+        DeviceMotionEvent.requestPermission();
+        props.onClick();
+      }}
+    >
+      Start
+    </Button>
   );
 };
 
