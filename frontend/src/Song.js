@@ -31,7 +31,7 @@ export default function Song() {
 
   const [tracksParams, setTrackParams] = useState({});
 
-  const bpm = speed * 4;
+  const bpm = speed * 6;
 
   useEffect(() => {
     console.log("Song.js: Inititalized");
