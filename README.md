@@ -21,7 +21,7 @@ To make AI part we utilised Meta Demucs, a transformer-based music source separa
 
 ---
 ### Demo Link
-The app is available online and can be tested out by anyone at https://junction2023-nine.vercel.app
+The app is available online and can be tested out by anyone at http://bit.ly/pace_yourself
 
 ![](assets/pace-yourself-001.png)
 
