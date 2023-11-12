@@ -142,7 +142,7 @@ export default function Song() {
 
   const handleUserInputUpdate = ({ value }) => {
     // console.log(value)
-    setSpeed(value);
+    setSpeed(Math.min(value, data.song_bpm / 5));
     // videoRef.current.playbackRate = Math.max(0.1, value / 10);
   };
 
