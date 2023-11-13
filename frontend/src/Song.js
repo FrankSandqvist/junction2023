@@ -35,7 +35,7 @@ export default function Song() {
 
   useEffect(() => {
     console.log("Song.js: Inititalized");
-    fetch("https://bf6954ec028818.lhr.life/get_songs")
+    fetch("https://paceyourcelf.pythonanywhere.com/get_songs")
       .then((res) => res.json())
       .then((json) => {
         setData(json.find((d) => d.song_name === params.songId));
@@ -44,7 +44,7 @@ export default function Song() {
           (d) => d.song_name === params.songId
         )?.mp3_links;
         setTracks(
-          finalTracks.map((v) => `https://bf6954ec028818.lhr.life${v}`)
+          finalTracks.map((v) => `https://paceyourcelf.pythonanywhere.com${v}`)
         );
         setLoading(false);
       });
